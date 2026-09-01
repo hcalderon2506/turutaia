@@ -1,0 +1,17 @@
+let step=1,data={destination:"Cusco",days:"2 - 3 días",budget:"Moderado",interests:["Cultura","Gastronomía"]},matrix=null;
+async function init(){try{matrix=await fetch("routes.json").then(r=>r.json())}catch(e){console.error("No se pudo cargar routes.json",e)}render()}
+function go(id){document.querySelectorAll(".screen").forEach(x=>x.classList.toggle("active",x.id===id));window.scrollTo(0,0)}
+function quick(i){if(!data.interests.includes(i))data.interests.push(i);step=4;render();go("planner")}
+function render(){let s=document.getElementById("steps"),h="";
+if(step===1)h="<h3>¿A dónde quieres ir?</h3>"+matrix.destinations.slice(0,4).map(x=>`<button class="option ${data.destination===x?"selected":""}" onclick="pick('destination','${x}')">${x}</button>`).join("");
+if(step===2)h="<h3>¿Cuánto tiempo tienes?</h3>"+matrix.time_options.map(x=>`<button class="option ${data.days===x?"selected":""}" onclick="pick('days','${x}')">${x}</button>`).join("");
+if(step===3)h="<h3>¿Cuál es tu presupuesto?</h3>"+matrix.budget_options.map(x=>`<button class="option ${data.budget===x?"selected":""}" onclick="pick('budget','${x}')">💰 ${x}</button>`).join("");
+if(step===4)h="<h3>¿Qué te interesa?</h3>"+matrix.interest_options.map(x=>`<button class="option ${data.interests.includes(x)?"selected":""}" onclick="toggleInterest('${x}')">${x}</button>`).join("");
+s.innerHTML=h;document.getElementById("stepText").textContent=`Paso ${step} de 4`;document.getElementById("bar").style.width=(step*25)+"%";document.getElementById("next").textContent=step===4?"✨ Crear mi ruta":"Continuar →"}
+function pick(k,v){data[k]=v;render()}function toggleInterest(v){data.interests.includes(v)?data.interests=data.interests.filter(x=>x!==v):data.interests.push(v);render()}
+function nextStep(){if(step<4){step++;render()}else generate()}
+function generate(){go("loading");let i=0,a=[["Creando tu ruta...","Cruzando destino, tiempo, presupuesto e intereses."],["Personalizando opciones...","Priorizando actividades según tus intereses."],["Buscando experiencias locales...","Aplicando las reglas de la matriz."],["¡Tu ruta está lista!","Encontramos una ruta para ti."]];let t=setInterval(()=>{loadTitle.textContent=a[i][0];loadText.textContent=a[i][1];if(++i===a.length){clearInterval(t);setTimeout(buildRoute,400)}},600)}
+function buildRoute(){let r=matrix.routes.find(x=>x.destination===data.destination&&x.time===data.days)||matrix.routes.find(x=>x.destination===data.destination);routeTitle.textContent=r.route;routeMeta.textContent=`${r.destination} · ${r.time} · ${data.budget}`;reason.textContent=`Base: ${r.route}. El sistema prioriza actividades relacionadas con ${data.interests.join(", ")} y aplica el nivel de presupuesto ${data.budget.toLowerCase()}.`;days.innerHTML=`<div class="day"><b>Ruta recomendada</b>${r.activities.sort((a,b)=>score(b)-score(a)).map(x=>`<div class="activity"><span>${x.time}</span><b>${x.name}</b><span>${x.category.join(" · ")} · ${x.cost}</span><br><button onclick="detail('${x.name}')">Ver detalle →</button></div>`).join("")}</div>`;go("route")}
+function score(a){return a.category.reduce((n,c)=>n+(data.interests.includes(c)?2:0),0)}
+function detail(n){detailTitle.textContent=n;go("detail")}function save(){saved.innerHTML=`<div class="card"><b>${routeTitle.textContent}</b><p>${data.destination} · ${data.days} · ${data.budget}</p></div>`;document.querySelector("#route .primary").textContent="✓ Ruta guardada"}
+init();
