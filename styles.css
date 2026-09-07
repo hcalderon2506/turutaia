@@ -671,3 +671,16 @@ p{
   }
 
 }
+/* CORRECCIÓN PANTALLA DE BIENVENIDA */
+
+.screen.welcome{
+  display:none;
+}
+
+.screen.welcome.active{
+  display:flex;
+}
+
+#bottomNav{
+  display:none;
+}
