@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#012611">
+  <meta name="description" content="TuRutaIA — planificación de rutas turísticas personalizadas por el Perú.">
+  <title>TuRutaIA</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <main class="app-main">
+      <section id="welcome" class="screen welcome active" aria-label="Bienvenida">
+        <div class="welcome-content">
+          <img class="welcome-logo" src="logo-turutaia.png" alt="TuRutaIA" onerror="this.classList.add('logo-error')">
+          <p class="tagline">Tu camino, tu destino.</p>
+        </div>
+
+        <div class="welcome-route" aria-hidden="true">
+          <span class="route-line"></span>
+          <span class="route-pin">⌖</span>
+        </div>
+
+        <button id="startButton" class="welcome-cta" type="button" disabled>
+          <span>Comenzar</span><span aria-hidden="true">→</span>
+        </button>
+      </section>
+
+      <section id="home" class="screen" aria-label="Inicio">
+        <header class="topbar">
+          <img class="top-logo" src="logo-turutaia.png" alt="TuRutaIA">
+          <button class="icon-button" type="button" aria-label="Favoritos">♡</button>
+        </header>
+        <div class="page-content">
+          <small>TU COPILOTO DE VIAJE</small>
+          <h1>Viaja sin complicarte.</h1>
+          <p>Cuéntanos dónde quieres ir, cuánto tiempo tienes y qué te gusta. Nosotros armamos tu ruta.</p>
+
+          <button id="createRouteButton" class="primary" type="button">Crear mi ruta <span>→</span></button>
+
+          <label for="destinationSearch">¿A dónde quieres ir?</label>
+          <div class="search-wrap">
+            <span aria-hidden="true">⌕</span>
+            <input id="destinationSearch" autocomplete="off" placeholder="Busca un destino">
+          </div>
+          <div id="searchResults" class="search-results" hidden></div>
+
+          <h2>¿Qué quieres descubrir?</h2>
+          <div id="interestChips" class="chips"></div>
+
+          <div class="card highlight-card">
+            <span class="card-kicker">TU RUTA, A TU MANERA</span>
+            <b>Menos búsqueda. Más ruta.</b>
+            <p>Organiza una experiencia según tu tiempo, presupuesto e intereses.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="planner" class="screen" aria-label="Crear ruta">
+        <div class="page-content">
+          <button class="back" data-back="home" type="button">←</button>
+          <small>CREAR MI RUTA</small>
+          <h2>Personalicemos tu viaje</h2>
+          <div class="progress" aria-label="Progreso"><i id="bar"></i></div>
+          <p id="stepText">Paso 1 de 4</p>
+          <div id="steps"></div>
+          <div id="plannerError" class="inline-error" hidden></div>
+          <button id="next" class="primary" type="button">Continuar <span>→</span></button>
+        </div>
+      </section>
+
+      <section id="loading" class="screen center" aria-label="Creando ruta">
+        <div class="orb"><span>✦</span></div>
+        <small>TURUTAIA</small>
+        <h2 id="loadTitle">Creando tu ruta...</h2>
+        <p id="loadText">Estamos cruzando tus preferencias.</p>
+      </section>
+
+      <section id="route" class="screen" aria-label="Ruta personalizada">
+        <div class="page-content">
+          <button class="back" data-back="planner" type="button">←</button>
+          <small>TU RUTA PERSONALIZADA</small>
+          <h2 id="routeTitle">Tu ruta</h2>
+          <p id="routeMeta"></p>
+          <div class="reason">
+            <b>✦ ¿Por qué esta ruta?</b>
+            <p id="reason"></p>
+          </div>
+          <div id="days"></div>
+          <button id="saveRoute" class="primary" type="button">♡ Guardar ruta</button>
+        </div>
+      </section>
+
+      <section id="detail" class="screen" aria-label="Detalle de experiencia">
+        <div class="page-content">
+          <button class="back" data-back="route" type="button">←</button>
+          <div class="photo"><span>EXPERIENCIA LOCAL</span></div>
+          <small>RECOMENDADO PARA TI</small>
+          <h2 id="detailTitle">Experiencia</h2>
+          <p id="detailRating">★ 4.8 · Perú</p>
+          <div id="detailStats" class="stats"></div>
+          <h3>¿Por qué ir?</h3>
+          <p id="detailDescription"></p>
+          <div class="reason">
+            <b>✦ Te la recomendamos porque...</b>
+            <p id="detailReason"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="explore" class="screen" aria-label="Explorar">
+        <div class="page-content">
+          <small>EXPLORA PERÚ</small>
+          <h1>Encuentra tu próxima experiencia.</h1>
+          <p>Destinos y experiencias para empezar a construir tu próxima ruta.</p>
+          <div id="destinationGrid" class="grid"></div>
+        </div>
+      </section>
+
+      <section id="trips" class="screen" aria-label="Mis viajes">
+        <div class="page-content">
+          <small>MIS VIAJES</small>
+          <h1>Tus rutas guardadas</h1>
+          <div id="saved" class="empty">
+            <b>Aún no tienes viajes guardados</b>
+            <p>Crea una ruta y guárdala aquí.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="profile" class="screen" aria-label="Perfil">
+        <div class="page-content">
+          <small>MI PERFIL</small>
+          <h1>Hola, viajero 👋</h1>
+          <div class="card">
+            <b>Tu perfil de viaje</b>
+            <p>Personaliza tus preferencias para recibir mejores recomendaciones.</p>
+          </div>
+          <h3>Mis intereses</h3>
+          <div id="profileInterests" class="chips"></div>
+        </div>
+      </section>
+    </main>
+
+    <nav id="bottomNav" aria-label="Navegación principal">
+      <button data-nav="home" type="button"><span>⌂</span><small>Inicio</small></button>
+      <button data-nav="explore" type="button"><span>⌖</span><small>Explorar</small></button>
+      <button data-nav="trips" type="button"><span>♡</span><small>Viajes</small></button>
+      <button data-nav="profile" type="button"><span>◯</span><small>Perfil</small></button>
+    </nav>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
