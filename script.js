@@ -1,6 +1,7 @@
+function startApp(){go('home');document.getElementById('bottomNav').style.display='grid'}
 let step=1,data={destination:"Cusco",days:"2 - 3 días",budget:"Moderado",interests:["Cultura","Gastronomía"]},matrix=null;
 async function init(){try{matrix=await fetch("routes.json").then(r=>r.json())}catch(e){console.error("No se pudo cargar routes.json",e)}render()}
-function go(id){document.querySelectorAll(".screen").forEach(x=>x.classList.toggle("active",x.id===id));window.scrollTo(0,0)}
+function go(id){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));const nav=document.getElementById('bottomNav');if(nav)nav.style.display=id==='welcome'?'none':'grid';window.scrollTo(0,0)}
 function quick(i){if(!data.interests.includes(i))data.interests.push(i);step=4;render();go("planner")}
 function render(){let s=document.getElementById("steps"),h="";
 if(step===1)h="<h3>¿A dónde quieres ir?</h3>"+matrix.destinations.slice(0,4).map(x=>`<button class="option ${data.destination===x?"selected":""}" onclick="pick('destination','${x}')">${x}</button>`).join("");
