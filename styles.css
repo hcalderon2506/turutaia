@@ -684,3 +684,12 @@ p{
 #bottomNav{
   display:none;
 }
+/* CORRECCIÓN DEFINITIVA DE PANTALLA INICIAL */
+
+#welcome.screen:not(.active) {
+  display: none !important;
+}
+
+#welcome.screen.active {
+  display: flex !important;
+}
